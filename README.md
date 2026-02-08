@@ -611,7 +611,7 @@ Special thanks to:
 
 *The most comprehensive free European airspace download tool*
 
-[Report Bug](https://github.com/your-repo/issues) • [Request Feature](https://github.com/your-repo/issues) • [Contribute](https://github.com/your-repo/pulls)
+[Report Bug](https://github.com/Bi7Wis3/Airspace_Downloader/issues) • [Request Feature](https://github.com/Bi7Wis3/Airspace_Downloader/issues) • [Contribute](https://github.com/Bi7Wis3/Airspace_Downloader/pulls)
 
 Made with ❤️ by the aviation community
 

@@ -114,5 +114,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ---
 
 **Maintainer:** iFuel Manager Development Team
-**Repository:** [To be added]
-**Issues:** [To be added]
+**Repository:** https://github.com/Bi7Wis3/Airspace_Downloader
+**Issues:** https://github.com/Bi7Wis3/Airspace_Downloader/issues
