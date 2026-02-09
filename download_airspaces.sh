@@ -310,6 +310,10 @@ if [ $total_files -gt 0 ]; then
     ls -lh "$OUTPUT_DIR"/*.txt | awk '{printf "  %-35s %6s\n", $9, $5}'
 
     log "Download complete: $total_files files, $total_size total"
+##################
+# checkink for valid files... 
+###################
+    ./scripts/validate_airspace.sh ./output/*
 else
     echo -e "${RED}✗ No files downloaded${NC}"
     log "ERROR: No files were successfully downloaded"
