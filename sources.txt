@@ -1,0 +1,83 @@
+# Airspace Downloader - source list
+#
+# Format:  region | name | description | url
+#   name        -> saved as output/<name>.txt (keep it stable, without a year)
+#   description -> shown while downloading
+#   url         -> http(s) link, or lvnl://airspace to convert the official Dutch
+#                  LVNL data feed (scripts/lvnl_to_openair.py, refreshed every AIRAC)
+#
+# Lines starting with # are ignored. Edit this file to add, remove or update sources.
+# Every URL below was verified on 2026-10-16 (HTTP 200 + valid OpenAir records).
+#
+# Tip: SoaringWeb filenames change with each release. The current filename for most
+# countries is listed in https://github.com/XCSoar/xcsoar-data-content/tree/master/data/remote/airspace
+
+# ---------------------------------------------------------------- Europe
+# Belgium: LVZC publishes a new yearly folder around 31 March; update the 3 URLs below then.
+# Folder index: https://www.lvzc.be/index.php/luchtruim/luchtruimbestanden
+Europe | belgium_weekdays   | Belgium/Lux weekdays, all (Mar 2026) | https://www.lvzc.be/index.php/luchtruim/luchtruimbestanden/2026/vanaf-31-03-2026/2631-bellux-week-all-20260331/file
+Europe | belgium_weekdays_gliding | Belgium/Lux weekdays, gliding (Mar 2026) | https://www.lvzc.be/index.php/luchtruim/luchtruimbestanden/2026/vanaf-31-03-2026/2632-bellux-week-gaa-20260331/file
+Europe | belgium_weekends   | Belgium/Lux weekends (Mar 2026)      | https://www.lvzc.be/index.php/luchtruim/luchtruimbestanden/2026/vanaf-31-03-2026/2633-bellux-weekend-20260331/file
+Europe | belgium_ebr78_notam | Belgium EBR78 (load only when NOTAM'd) | https://www.lvzc.be/index.php/luchtruim/luchtruimbestanden/2026/vanaf-31-03-2026/2634-ebr78-if-notam-no-gliding/file
+Europe | bulgaria           | Bulgaria (2023)                      | https://soaring.silentflight.ca/Airspace/BG/BGair_23.txt
+Europe | croatia            | Croatia (2012)                       | https://soaring.silentflight.ca/Airspace/HR/HRV-2012.txt
+Europe | czechia            | Czechia (Aug 2025)                   | https://soaring.silentflight.ca/Airspace/CZ/CZ_all_25-08-07.txt
+Europe | czechia_xcsoar     | Czechia (XCSoar)                     | https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master/data/content/airspace/country/CZ-ASP-National-XCSoar.txt
+Europe | denmark            | Denmark (Feb 2026)                   | https://soaring.silentflight.ca/Airspace/DK/DK-Airspace-20260204.txt
+Europe | estonia            | Estonia (Jun 2015)                   | https://soaring.silentflight.ca/Airspace/EE/Estonia_Airspace_June_2015.txt
+Europe | finland            | Finland (2026)                       | https://soaring.silentflight.ca/Airspace/FI/FIN2026.txt
+Europe | finland_aviamaps   | Finland (Aviamaps, auto-updated)     | https://aviamaps.com/api/finland.txt
+Europe | finland_pik_static | Finland (PIK static)                 | https://pik.fi/ilmatila/FINstatic.txt
+Europe | finland_pik_today  | Finland (PIK today, daily)           | https://pik.fi/ilmatila/FINtoday.txt
+Europe | france             | France (SoaringWeb Jul 2026)         | https://soaring.silentflight.ca/Airspace/FR/france_2026_07_30.txt
+Europe | france_planeurnet  | France (Planeur-Net)                 | https://planeur-net.github.io/airspace/france.txt
+Europe | germany            | Germany (DAeC Sep 2026)              | https://www.daec.de/media/files/Dateien/Fachbereiche/Luftraum_und_Flugsicherheit/2026_09_Airspace_Germany_OA1.txt
+Europe | germany_github     | Germany (GitHub mirror of DAeC)      | https://raw.githubusercontent.com/bubeck/airspace_germany/main/source/airspace_germany.txt
+Europe | germany_border     | Germany border (DAeC)                | https://www.daec.de/media/files/2012/service/luftraumdaten/Grenze_Deutschland.txt
+Europe | germany_military   | Germany military low-flying          | https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master/data/content/airspace/country/DE-ASP-Military-Low-Flying.txt
+Europe | greece             | Greece                               | https://soaring.silentflight.ca/Airspace/GR/greece_03.txt
+Europe | hungary            | Hungary (2026)                       | https://soaring.silentflight.ca/Airspace/HU/HunSUA2026_v2.txt
+Europe | iceland            | Iceland (2018)                       | https://soaring.silentflight.ca/Airspace/IS/icelnd18.txt
+Europe | ireland            | Ireland (2025)                       | https://soaring.silentflight.ca/Airspace/EI/Ireland_2025.txt
+Europe | italy              | Italy (Apr 2025)                     | https://soaring.silentflight.ca/Airspace/IT/ITA_ASP_17-APR-2025-2504_V03.txt
+Europe | latvia             | Latvia (2014)                        | https://soaring.silentflight.ca/Airspace/LV/lv_2014_05_04.txt
+Europe | lithuania          | Lithuania (2026)                     | https://soaring.silentflight.ca/Airspace/LT/LT_Oro_Erdve_2026_v05.txt
+Europe | macedonia          | North Macedonia (2018)               | https://soaring.silentflight.ca/Airspace/MK/macedonia_airspace_lo_2018.txt
+Europe | netherlands        | Netherlands (official LVNL, current AIRAC) | lvnl://airspace
+Europe | netherlands_community | Netherlands (Nico B, Feb 2025)    | https://soaring.silentflight.ca/Airspace/NL/NL-ASP_20feb2025a.txt
+Europe | norway             | Norway (2025)                        | https://soaring.silentflight.ca/Airspace/NO/Norway_2025.txt
+Europe | poland             | Poland (Jul 2026)                    | https://soaring.silentflight.ca/Airspace/PL/Poland_Airspaces_2026_07_02.txt
+Europe | portugal           | Portugal mainland (May 2020)         | https://soaring.silentflight.ca/Airspace/PT/Portugal_mainland_may_2020_v1.3.txt
+Europe | romania            | Romania (May 2025)                   | https://soaring.silentflight.ca/Airspace/RO/RomaniaMAI2025.txt
+Europe | russia             | Russia (2013)                        | https://soaring.silentflight.ca/Airspace/RU/russia_1310.txt
+Europe | slovakia           | Slovakia (Apr 2024)                  | https://soaring.silentflight.ca/Airspace/SK/AS_LBB_18_APR_2024.txt
+Europe | slovakia_xcsoar    | Slovakia (XCSoar)                    | https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master/data/content/airspace/country/SK-ASP-National-XCSoar.txt
+Europe | slovenia           | Slovenia (2016)                      | https://soaring.silentflight.ca/Airspace/SI/si_2016.04.txt
+Europe | spain              | Spain full (Jul 2026)                | https://soaring.silentflight.ca/Airspace/ES/SUASpain202607.full.txt
+Europe | spain_reduced      | Spain reduced (Jul 2026)             | https://soaring.silentflight.ca/Airspace/ES/SUASpain202607.txt
+Europe | sweden             | Sweden (Aug 2026)                    | https://soaring.silentflight.ca/Airspace/SE/Sweden-Airspace-2026-August-06.txt
+Europe | switzerland        | Switzerland (SFVS Mar 2026)          | https://soaring.silentflight.ca/Airspace/CH/260405_Airspace_MAR26_CH_SFVS-FSVV.txt
+Europe | switzerland_dabs   | Switzerland eDABS (Mar 2025)         | https://www.segelflug.ch/wp-content/uploads/2025/03/SFVS-FSVV_CH-Airspace25_eDABS_MAR25.txt
+Europe | ukraine            | Ukraine (2021)                       | https://soaring.silentflight.ca/Airspace/UA/ukraine-gliding-airspace-2021.txt
+Europe | united_kingdom     | United Kingdom (asselect, always current) | https://asselect.uk/default/openair.txt
+Europe | europe_thermals    | Europe thermal hotspots (overlay)    | http://glidinghotspots.eu/data/simple/0002/Thermal_Spaces_EU.txt
+
+# ---------------------------------------------------------------- Americas
+Americas | usa              | USA (Sep 2026)                       | https://soaring.silentflight.ca/Airspace/NA/allusa.v26.09-03.1.txt
+Americas | canada           | Canada (all classes)                 | https://soaring.silentflight.ca/Airspace/NA/CanAirspace323all.txt
+Americas | canada_322       | Canada (v3.22)                       | https://soaring.silentflight.ca/Airspace/NA/canadian_airspace_322.txt
+Americas | canada_xcsoar    | Canada (XCSoar)                      | https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master/data/content/airspace/country/CA-ASP-National-XCSoar.txt
+Americas | canada_us_border | Canada/US border                     | https://soaring.silentflight.ca/Airspace/NA/CanUSborder.txt
+Americas | brazil           | Brazil (2017)                        | https://soaring.silentflight.ca/Airspace/BR/2017_06_05_CBVL_BRASIL_TOTAL_R1.txt
+Americas | colombia         | Colombia (2018)                      | https://soaring.silentflight.ca/Airspace/CO/Colombia-20181224_Todos.txt
+
+# ---------------------------------------------------------------- Asia / Oceania / Africa
+Other | australia           | Australia (Jul 2026)                 | https://soaring.silentflight.ca/Airspace/AU/australia_class_all_26_07_09.txt
+Other | australia_no_fia    | Australia without FIA (Jul 2026)     | https://soaring.silentflight.ca/Airspace/AU/australia_class_all_NO_fia_26_07_09.txt
+Other | australia_hgpg      | Australia HG/PG site guide           | https://siteguide.org.au/siteGuide.OpenAir.txt
+Other | new_zealand         | New Zealand (2024)                   | https://soaring.silentflight.ca/Airspace/NZ/2024-NZ-Airspace-v1.txt
+Other | israel              | Israel (Oct 2025)                    | https://soaring.silentflight.ca/Airspace/IL/israel_sua14-10-25.txt
+Other | japan               | Japan (2019)                         | https://soaring.silentflight.ca/Airspace/JP/JapanAS190330.txt
+Other | south_africa        | South Africa (Jan 2025)              | https://soaring.silentflight.ca/Airspace/ZA/SSSA-15JAN2025v2a-Final.txt
+Other | south_africa_xcsoar | South Africa (XCSoar)                | https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master/data/content/airspace/country/ZA-ASP-National-XCSoar.txt
+Other | malawi              | Malawi (XCSoar)                      | https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master/data/content/airspace/country/MW-ASP-National-XCSoar.txt

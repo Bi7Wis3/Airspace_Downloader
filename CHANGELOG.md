@@ -5,6 +5,33 @@ All notable changes to the European Airspace Downloader project will be document
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2026-10-16
+
+### Added
+- `sources.txt`: all sources in one editable list (region | name | description | url)
+- `add_airspace.sh`: validate and add your own (old) OpenAir files or folders to `output/archive/`
+- Automatic archive: a changed source moves the previous version to `output/archive/<name>_<date>.txt`
+- Netherlands from official LVNL open data (`scripts/lvnl_to_openair.py`), current every AIRAC
+- Belgium/Luxembourg 2026 files from LVZC (weekdays all, weekdays gliding, weekends, EBR78)
+- New sources: UK, Sweden, Iceland, Finland PIK, USA, Canada, Brazil, Colombia, Australia,
+  New Zealand, Israel, Japan, South Africa, Malawi (62 sources in total)
+- Optional filter argument: `./download_airspaces.sh netherlands`
+
+### Changed
+- SoaringWeb URLs moved to soaring.silentflight.ca, updated to the latest releases
+  (Spain, Poland, Romania, Denmark, Hungary, Lithuania, Switzerland, France, Czechia)
+- Germany DAeC updated to September 2026
+- Stable output names without a year (`output/germany.txt`); dates live in the archive
+- Validator accepts folders and handles Latin-1/CRLF files
+
+### Fixed
+- Script stopped at the first failed download (`set -e`)
+- Failed downloads were reported as successful and left empty files
+- Error pages (HTML) were saved as airspace files
+- Validator was called with a folder and always failed
+- 8 dead links (404): Netherlands XCSoar, Spain, Poland, Romania, Denmark, Hungary, Lithuania, Switzerland
+- `token.txt` was not in `.gitignore`
+
 ## [1.0.0] - 2026-02-08
 
 ### Added

@@ -1,13 +1,24 @@
 #!/bin/bash
 
 ################################################################################
-# Airspace Downloader for Europe
-# Downloads OpenAir format airspace files from various sources
-# Author: iFuel Manager Development Team
-# Date: February 8, 2026
+# Airspace Downloader
+# Downloads OpenAir format airspace files listed in sources.txt
+# Author: Bi7Wis3 Development Team
+# Date: October 16, 2026
+#
+# Usage: ./download_airspaces.sh [filter]
+#   filter  optional; only download sources whose name or region contains it
+#           e.g. ./download_airspaces.sh germany   or   ./download_airspaces.sh Europe
+#
+# A download only replaces output/<name>.txt when it is a valid OpenAir file.
+# If the new file differs from the existing one, the old version is moved to
+# output/archive/<name>_<date>.txt so earlier releases are never lost.
 ################################################################################
 
-set -e  # Exit on error
+set -u
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR" || exit 1
 
 # Colors for output
 RED='\033[0;31m'
@@ -17,23 +28,28 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
+SOURCES_FILE="sources.txt"
 OUTPUT_DIR="output"
+ARCHIVE_DIR="$OUTPUT_DIR/archive"
 TEMP_DIR="temp"
 LOG_FILE="download.log"
+USER_AGENT="AirspaceDownloader/2.0"
+FILTER="${1:-}"
 
-# Create directories
-mkdir -p "$OUTPUT_DIR" "$TEMP_DIR"
+source "$SCRIPT_DIR/scripts/openair_lib.sh"
+
+mkdir -p "$OUTPUT_DIR" "$ARCHIVE_DIR" "$TEMP_DIR"
 
 # Logging function
 log() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" | tee -a "$LOG_FILE"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
 }
 
 # Print header
 print_header() {
     echo -e "${BLUE}╔════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║         European Airspace Downloader (OpenAir)            ║${NC}"
-    echo -e "${BLUE}║                    Version 1.0                             ║${NC}"
+    echo -e "${BLUE}║              Airspace Downloader (OpenAir)                 ║${NC}"
+    echo -e "${BLUE}║                       Version 2.0                          ║${NC}"
     echo -e "${BLUE}╚════════════════════════════════════════════════════════════╝${NC}"
     echo ""
 }
@@ -46,297 +62,148 @@ section() {
     echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 }
 
-# Download function with progress
+trim() {
+    local s="$1"
+    s="${s#"${s%%[![:space:]]*}"}"
+    s="${s%"${s##*[![:space:]]}"}"
+    printf '%s' "$s"
+}
+
+# Download one source. Prints status, returns 0 on success.
 download_file() {
-    local url="$1"
-    local output="$2"
-    local description="$3"
+    local name="$1"
+    local description="$2"
+    local url="$3"
+    local target="$OUTPUT_DIR/$name.txt"
+    local tmp="$TEMP_DIR/$name.txt"
 
-    echo -n "  → $description... "
+    printf "  → %-45s " "$description"
 
-    if wget -q --show-progress --progress=bar:force:noscroll -O "$output" "$url" 2>&1 | tail -1; then
-        local size=$(du -h "$output" | cut -f1)
-        echo -e "${GREEN}✓${NC} ($size)"
-        log "SUCCESS: Downloaded $description ($size)"
-        return 0
+    if [ "$url" = "lvnl://airspace" ]; then
+        # Converted from the official LVNL data feed instead of a plain download
+        if ! python3 -I "$SCRIPT_DIR/scripts/lvnl_to_openair.py" "$tmp" 2>>"$LOG_FILE" || [ ! -s "$tmp" ]; then
+            rm -f "$tmp"
+            echo -e "${RED}✗ LVNL conversion failed (see $LOG_FILE)${NC}"
+            log "FAILED: $name LVNL conversion"
+            return 1
+        fi
     else
-        rm -f "$output"
-        echo -e "${RED}✗ Failed${NC}"
-        log "FAILED: Could not download $description from $url"
+        local http_code
+        http_code=$(curl -sL --fail -m 120 -A "$USER_AGENT" -o "$tmp" -w "%{http_code}" "$url" 2>/dev/null)
+        if [ $? -ne 0 ] || [ ! -s "$tmp" ]; then
+            rm -f "$tmp"
+            echo -e "${RED}✗ Failed (HTTP ${http_code:-?})${NC}"
+            log "FAILED: $name HTTP ${http_code:-?} $url"
+            return 1
+        fi
+    fi
+
+    # Generated files embed today's date; compare without comment lines
+    # so an unchanged AIRAC doesn't create a new archive copy every run
+    if [ -f "$target" ] && cmp -s <(grep -av '^\*' "$tmp") <(grep -av '^\*' "$target"); then
+        rm -f "$tmp"
+        echo -e "${GREEN}✓${NC} unchanged ($(openair_count "$target") airspaces)"
+        log "UNCHANGED: $name"
+        return 0
+    fi
+
+    local reason
+    if ! reason=$(openair_check "$tmp"); then
+        rm -f "$tmp"
+        echo -e "${RED}✗ Not an OpenAir file ($reason)${NC}"
+        log "INVALID: $name ($reason) $url"
         return 1
     fi
+
+    local count
+    count=$(openair_count "$tmp")
+    local size
+    size=$(du -h "$tmp" | cut -f1)
+
+    local note=""
+    if [ -f "$target" ]; then
+        local archived
+        archived="$ARCHIVE_DIR/${name}_$(date -r "$target" '+%Y-%m-%d').txt"
+        mv "$target" "$archived"
+        note=" ${BLUE}(old version → $archived)${NC}"
+        log "ARCHIVED: $target -> $archived"
+    fi
+    mv "$tmp" "$target"
+    echo -e "${GREEN}✓${NC} $count airspaces, $size$note"
+    log "SUCCESS: $name ($count airspaces, $size) $url"
+    return 0
 }
 
 # Start
 print_header
-log "Starting Airspace Downloader"
+log "Starting Airspace Downloader${FILTER:+ (filter: $FILTER)}"
 
-################################################################################
-# 1. FRANCE - From GitHub (planeur-net)
-################################################################################
-section "1. France (planeur-net GitHub)"
+if [ ! -f "$SOURCES_FILE" ]; then
+    echo -e "${RED}✗ $SOURCES_FILE not found${NC}"
+    exit 1
+fi
 
-download_file \
-    "https://planeur-net.github.io/airspace/france.txt" \
-    "$OUTPUT_DIR/france_2026.txt" \
-    "France airspace (Feb 2026)"
+ok=0
+failed=0
+failed_list=()
+current_region=""
 
-################################################################################
-# 2. GERMANY - From GitHub (bubeck/airspace_germany)
-################################################################################
-section "2. Germany (GitHub Repository)"
+while IFS='|' read -r region name description url || [ -n "$region" ]; do
+    region=$(trim "$region")
+    [ -z "$region" ] && continue
+    [[ "$region" == \#* ]] && continue
+    name=$(trim "${name:-}")
+    description=$(trim "${description:-}")
+    url=$(trim "${url:-}")
 
-download_file \
-    "https://raw.githubusercontent.com/bubeck/airspace_germany/main/source/airspace_germany.txt" \
-    "$OUTPUT_DIR/germany_2026.txt" \
-    "Germany airspace (GitHub)"
+    if [ -z "$name" ] || [ -z "$url" ]; then
+        echo -e "${YELLOW}⚠ Skipping malformed line: $region | $name${NC}"
+        continue
+    fi
+    if [ -n "$FILTER" ] && [[ "${region,,} ${name,,}" != *"${FILTER,,}"* ]]; then
+        continue
+    fi
 
-################################################################################
-# 3. GERMANY - Official DAEC
-################################################################################
-section "3. Germany (DAEC Official)"
+    if [ "$region" != "$current_region" ]; then
+        section "$region"
+        current_region="$region"
+    fi
 
-download_file \
-    "https://www.daec.de/media/files/Dateien/Fachbereiche/Luftraum_und_Flugsicherheit/2025_06_Airspace_Germany_DAeC.txt" \
-    "$OUTPUT_DIR/germany_daec_2025.txt" \
-    "Germany DAEC official (June 2025)"
-
-################################################################################
-# 4. SWITZERLAND - From openair-rs
-################################################################################
-section "4. Switzerland (openair-rs)"
-
-download_file \
-    "https://raw.githubusercontent.com/dbrgn/openair-rs/master/example_data/Switzerland.txt" \
-    "$OUTPUT_DIR/switzerland_2026.txt" \
-    "Switzerland airspace"
-
-################################################################################
-# 5. XCSoar Repository - Multiple Countries
-################################################################################
-section "5. XCSoar Data Repository"
-
-BASE_URL="https://raw.githubusercontent.com/XCSoar/xcsoar-data-content/master"
-
-declare -A xcsoar_files=(
-    ["czechia"]="data/content/airspace/country/CZ-ASP-National-XCSoar.txt"
-    ["netherlands"]="data/content/airspace/country/NL-ASP-National-XCSoar.txt"
-)
-
-for country in "${!xcsoar_files[@]}"; do
-    file_path="${xcsoar_files[$country]}"
-    url="${BASE_URL}/${file_path}"
-    output_file="$OUTPUT_DIR/${country}_2025.txt"
-
-    download_file "$url" "$output_file" "$country (XCSoar)"
-done
-
-################################################################################
-# 6. SoaringWeb - European Countries
-################################################################################
-section "6. SoaringWeb (Multiple European Countries)"
-
-# Belgium (2 files - weekdays and weekends)
-download_file \
-    "https://soaringweb.org/Airspace/BE/BELLUX_WEEK_20240331.txt" \
-    "$OUTPUT_DIR/belgium_weekdays_2024.txt" \
-    "Belgium weekdays"
-
-download_file \
-    "https://soaringweb.org/Airspace/BE/BELLUX_W-END_20240331.txt" \
-    "$OUTPUT_DIR/belgium_weekends_2024.txt" \
-    "Belgium weekends"
-
-# Italy
-download_file \
-    "https://soaringweb.org/Airspace/IT/ITA_ASP_17-APR-2025-2504_V03.txt" \
-    "$OUTPUT_DIR/italy_2025.txt" \
-    "Italy (Apr 2025)"
-
-# Croatia
-download_file \
-    "https://soaringweb.org/Airspace/HR/HRV-2012.txt" \
-    "$OUTPUT_DIR/croatia_2012.txt" \
-    "Croatia"
-
-# Spain
-download_file \
-    "https://soaringweb.org/Airspace/ES/SUASpain202509.txt" \
-    "$OUTPUT_DIR/spain_2025.txt" \
-    "Spain (Sep 2025)"
-
-# Portugal
-download_file \
-    "https://soaringweb.org/Airspace/PT/Portugal_mainland_may_2020_v1.3.txt" \
-    "$OUTPUT_DIR/portugal_2020.txt" \
-    "Portugal"
-
-# Poland
-download_file \
-    "https://soaringweb.org/Airspace/PL/Polska_2024-08-19.txt" \
-    "$OUTPUT_DIR/poland_2024.txt" \
-    "Poland (Aug 2024)"
-
-# Greece
-download_file \
-    "https://soaringweb.org/Airspace/GR/greece_03.txt" \
-    "$OUTPUT_DIR/greece_2025.txt" \
-    "Greece"
-
-# Romania
-download_file \
-    "https://soaringweb.org/Airspace/RO/RomaniaFEB2024.txt" \
-    "$OUTPUT_DIR/romania_2024.txt" \
-    "Romania (Feb 2024)"
-
-# Ireland
-download_file \
-    "https://soaringweb.org/Airspace/EI/Ireland_2025.txt" \
-    "$OUTPUT_DIR/ireland_2025.txt" \
-    "Ireland (2025)"
-
-# Slovenia
-download_file \
-    "https://soaringweb.org/Airspace/SI/si_2016.04.txt" \
-    "$OUTPUT_DIR/slovenia_2016.txt" \
-    "Slovenia"
-
-# Slovakia (SoaringWeb version)
-download_file \
-    "https://soaringweb.org/Airspace/SK/AS_LBB_18_APR_2024.txt" \
-    "$OUTPUT_DIR/slovakia_soaringweb_2024.txt" \
-    "Slovakia (SoaringWeb)"
-
-# Macedonia
-download_file \
-    "https://soaringweb.org/Airspace/MK/macedonia_airspace_lo_2018.txt" \
-    "$OUTPUT_DIR/macedonia_2018.txt" \
-    "Macedonia"
-
-# Norway
-download_file \
-    "https://soaringweb.org/Airspace/NO/Norway_2025.txt" \
-    "$OUTPUT_DIR/norway_2025.txt" \
-    "Norway (2025)"
-
-# Denmark
-download_file \
-    "https://soaringweb.org/Airspace/DK/DK-OpenAir-AMDT07-20250520.txt" \
-    "$OUTPUT_DIR/denmark_2025.txt" \
-    "Denmark (May 2025)"
-
-# Bulgaria
-download_file \
-    "https://soaringweb.org/Airspace/BG/BGair_23.txt" \
-    "$OUTPUT_DIR/bulgaria_2023.txt" \
-    "Bulgaria"
-
-# Hungary
-download_file \
-    "https://soaringweb.org/Airspace/HU/HunSUA2024_v2.txt" \
-    "$OUTPUT_DIR/hungary_2024.txt" \
-    "Hungary (2024)"
-
-################################################################################
-# 7. Additional Sources
-################################################################################
-section "7. Additional European Sources"
-
-# Finland (from aviamaps)
-download_file \
-    "https://aviamaps.com/api/finland.txt" \
-    "$OUTPUT_DIR/finland_2025.txt" \
-    "Finland (aviamaps)"
-
-# Switzerland (SoaringWeb - more comprehensive version)
-download_file \
-    "https://soaringweb.org/Airspace/CH/SFVS-FSVV_CH-Airspace25_eDABS_MAR25.txt" \
-    "$OUTPUT_DIR/switzerland_soaringweb_2025.txt" \
-    "Switzerland (SoaringWeb Mar 2025)"
-
-################################################################################
-# 8. Baltic States & Eastern Europe
-################################################################################
-section "8. Baltic States & Eastern Europe"
-
-# Lithuania
-download_file \
-    "https://soaringweb.org/Airspace/LT/Oro_erdve_2025_v_01.txt" \
-    "$OUTPUT_DIR/lithuania_2025.txt" \
-    "Lithuania (2025)"
-
-# Latvia
-download_file \
-    "https://soaringweb.org/Airspace/LV/lv_2014_05_04.txt" \
-    "$OUTPUT_DIR/latvia_2014.txt" \
-    "Latvia"
-
-# Estonia
-download_file \
-    "https://soaringweb.org/Airspace/EE/Estonia_Airspace_June_2015.txt" \
-    "$OUTPUT_DIR/estonia_2015.txt" \
-    "Estonia (June 2015)"
-
-# Russia
-download_file \
-    "https://soaringweb.org/Airspace/RU/russia_1310.txt" \
-    "$OUTPUT_DIR/russia_2013.txt" \
-    "Russia"
-
-# Ukraine
-download_file \
-    "https://soaringweb.org/Airspace/UA/ukraine-gliding-airspace-2021.txt" \
-    "$OUTPUT_DIR/ukraine_2021.txt" \
-    "Ukraine (2021)"
+    if download_file "$name" "$description" "$url"; then
+        ok=$((ok + 1))
+    else
+        failed=$((failed + 1))
+        failed_list+=("$name  $url")
+    fi
+done < "$SOURCES_FILE"
 
 ################################################################################
 # SUMMARY
 ################################################################################
 section "Download Summary"
-
 echo ""
-total_files=$(ls -1 "$OUTPUT_DIR"/*.txt 2>/dev/null | wc -l)
-total_size=$(du -ch "$OUTPUT_DIR"/*.txt 2>/dev/null | tail -1 | cut -f1)
-
-if [ $total_files -gt 0 ]; then
-    echo -e "${GREEN}✓ Successfully downloaded: $total_files files${NC}"
-    echo -e "${GREEN}✓ Total size: $total_size${NC}"
+echo -e "${GREEN}✓ Downloaded / up to date: $ok${NC}"
+if [ "$failed" -gt 0 ]; then
+    echo -e "${RED}✗ Failed: $failed${NC}"
+    for f in "${failed_list[@]}"; do
+        echo -e "    ${RED}•${NC} $f"
+    done
     echo ""
-    echo "Files saved to: $OUTPUT_DIR/"
-    echo ""
-
-    # List downloaded files
-    log "Download complete: $total_files files, $total_size total"
-else
-    echo -e "${RED}✗ No files downloaded${NC}"
-    log "ERROR: No files were successfully downloaded\n"
-    exit 1
+    echo "  Failed sources keep their previous file in $OUTPUT_DIR/ (if any)."
+    echo "  Update the URL in $SOURCES_FILE - SoaringWeb renames files on each release."
 fi
-################################################################################
-# checking for valid OpenAir files...
-################################################################################
-
 echo ""
-echo -e "${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║            Checking for Valid Openair Files                ║${NC}"
-echo -e "${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
-echo ""
+echo "  Current files : $OUTPUT_DIR/   ($(find "$OUTPUT_DIR" -maxdepth 1 -type f -name '*.txt' | wc -l) files)"
+echo "  Old versions  : $ARCHIVE_DIR/   ($(find "$ARCHIVE_DIR" -maxdepth 1 -type f -name '*.txt' | wc -l) files)"
+log "Done: $ok ok, $failed failed"
 
-./scripts/validate_airspace.sh ./$OUTPUT_DIR
-
-################################################################################
-# CLEANUP
-################################################################################
-echo ""
 rm -rf "$TEMP_DIR"
+echo ""
 echo -e "${BLUE}Log saved to: $LOG_FILE${NC}"
 echo ""
-echo -e "${GREEN}╔════════════════════════════════════════════════════════════╗${NC}"
-echo -e "${GREEN}║                    DOWNLOAD COMPLETE!                      ║${NC}"
-echo -e "${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
-echo ""
 echo "Next steps:"
-echo "  1. Check the files in '$OUTPUT_DIR/' directory"
-echo "  2. Load them in your navigation app"
-echo "  3. See README.md for more download sources"
+echo "  • Load files from '$OUTPUT_DIR/' in your navigation app"
+echo "  • Add your own old files with: ./add_airspace.sh <file.txt>... "
 echo ""
+
+[ "$failed" -eq 0 ]

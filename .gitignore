@@ -25,3 +25,9 @@ desktop.ini
 # Backup files
 *.bak
 *.backup
+
+# Archived old versions
+output/archive/
+
+# Secrets
+token.txt

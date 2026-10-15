@@ -1,48 +1,36 @@
-# 🌍 European Airspace Downloader
+# 🌍 Airspace Downloader
 
-**The most comprehensive automated OpenAir airspace downloader for Europe**
+**Automated, validated OpenAir airspace downloads for 41 countries, with version history**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Version](https://img.shields.io/badge/version-1.0-green.svg)
-![Coverage](https://img.shields.io/badge/coverage-26_countries-brightgreen.svg)
-![Airspaces](https://img.shields.io/badge/airspaces-13,412-orange.svg)
+![Version](https://img.shields.io/badge/version-2.0-green.svg)
+![Sources](https://img.shields.io/badge/sources-62-brightgreen.svg)
+![Countries](https://img.shields.io/badge/countries-41-brightgreen.svg)
+![Airspaces](https://img.shields.io/badge/airspaces-35,411-orange.svg)
 
 ---
 
 ## 🎯 What is This?
 
-**European Airspace Downloader** is a fully automated bash script that downloads and validates OpenAir format airspace files for **26 European countries** from the Atlantic to the Urals. Perfect for pilots, flight planners, and aviation enthusiasts who need up-to-date airspace information for:
+**Airspace Downloader** is a bash tool that downloads OpenAir airspace files from the best free
+sources worldwide, validates every file, and keeps older versions instead of overwriting them.
+For pilots of paramotors, paragliders, hang gliders, gliders and light aircraft who load
+airspace into apps such as XCSoar, SeeYou, XCTrack, LK8000 or iFuel Navigator.
 
-- ✈️ **General Aviation** - VFR flight planning
-- 🛩️ **Gliding/Soaring** - Thermal flying and cross-country
-- 🪂 **Paragliding** - Safe flight planning with airspace awareness
-- 🎈 **Hang Gliding** - Cross-country navigation
-- 📱 **Navigation Apps** - XCSoar, SeeYou, LK8000, iFuel Manager
+### Highlights
 
-### Why Use This?
-
-- 🚀 **One Command** - Download 30 files covering 26 countries instantly
-- ✅ **Validated** - All files automatically checked for OpenAir format compliance
-- 📊 **Comprehensive** - 13,412 airspaces from Atlantic Ocean to Ural Mountains
-- 🔄 **Up-to-Date** - Sources from 2024-2026 data
-- 🆓 **Free & Open Source** - MIT Licensed, community-driven
-- 🛠️ **Professional Tools** - Includes validation and logging utilities
-
-### What Makes This Special?
-
-This isn't just a collection of links - it's a **complete automation system** that:
-- Downloads from multiple authoritative sources (SoaringWeb, GitHub, official aviation authorities)
-- Validates each file for OpenAir format compliance
-- Provides detailed statistics and logging
-- Handles errors gracefully with retry logic
-- Organizes files with consistent naming conventions
-- Includes professional documentation and tools
-
-**No manual downloads. No broken links. No guesswork. Just run the script and get flying!**
+- 🚀 **One command**: `./download_airspaces.sh` fetches all 62 sources
+- 📝 **One list**: every source is a line in [`sources.txt`](sources.txt). Updating a country means changing one URL
+- ✅ **Validated**: empty files, 404s, HTML error pages and Cloudflare challenges are rejected; the last good file stays in place
+- 🗂️ **Version history**: a changed source moves the previous file to `output/archive/`. Nothing is ever deleted
+- 📥 **Your own files**: `./add_airspace.sh` validates and archives old files you already have
+- 🇳🇱 **Official Dutch data**: Netherlands is generated from LVNL's open data feed every AIRAC
+- 🇧🇪 **Belgium 2026**: the latest LVZC release, with fixed syntax and corrected areas
+- 🎯 **Filters**: `./download_airspaces.sh belgium` updates just what you need
 
 ---
 
-## ⚠️ CRITICAL DISCLAIMER
+## ⚠️ Disclaimer
 
 **THESE AIRSPACE FILES ARE NOT CERTIFIED FOR NAVIGATION OR FLIGHT PLANNING.**
 
@@ -52,9 +40,9 @@ This isn't just a collection of links - it's a **complete automation system** th
 ├─────────────────────────────────────────────────────────────┤
 │  ❌ DO NOT use as primary navigational aid                  │
 │  ❌ DO NOT rely solely on this data for flight safety       │
-│  ✅ ALWAYS refer to official charts and NOTAMs              │
+│  ✅ ALWAYS refer to official charts, the AIP and NOTAMs     │
 │  ✅ ALWAYS check current airspace status before flight      │
-│                                                              │
+│                                                             │
 │  You assume all risk of use. The maintainers accept no      │
 │  liability for errors, omissions, or consequences of use.   │
 └─────────────────────────────────────────────────────────────┘
@@ -62,210 +50,280 @@ This isn't just a collection of links - it's a **complete automation system** th
 
 ---
 
-## 📊 Project Statistics
-
-This project represents the **most comprehensive free European airspace dataset** available anywhere. Here's what you get when you run the download script:
-
-```
-┌───────────────┬─────────────────────────┐
-│    Metric     │          Count          │
-├───────────────┼─────────────────────────┤
-│ 🌍 Countries  │ 26 European countries   │
-├───────────────┼─────────────────────────┤
-│ 📁 Files      │ 30 airspace files       │
-├───────────────┼─────────────────────────┤
-│ ✈️ Airspaces  │ 13,412 individual zones │
-├───────────────┼─────────────────────────┤
-│ 💾 Total Size │ 8.9 MB                  │
-└───────────────┴─────────────────────────┘
-```
-
-### Geographic Coverage
-
-```
-Western Europe (5):
-🇧🇪 Belgium • 🇫🇷 France • 🇩🇪 Germany • 🇳🇱 Netherlands • 🇨🇭 Switzerland
-
-Southern Europe (7):
-🇭🇷 Croatia • 🇬🇷 Greece • 🇮🇹 Italy • 🇲🇰 N. Macedonia • 🇵🇹 Portugal • 🇸🇮 Slovenia • 🇪🇸 Spain
-
-Northern Europe (5):
-🇩🇰 Denmark • 🇪🇪 Estonia • 🇫🇮 Finland • 🇮🇪 Ireland • 🇳🇴 Norway
-
-Eastern Europe (9):
-🇧🇬 Bulgaria • 🇨🇿 Czechia • 🇭🇺 Hungary • 🇱🇻 Latvia • 🇱🇹 Lithuania • 🇵🇱 Poland • 🇷🇴 Romania • 🇷🇺 Russia • 🇸🇰 Slovakia • 🇺🇦 Ukraine
-```
-
----
-
-## 📈 Top 10 Countries by Airspace Count
-
-```
-┌──────┬────────────────┬───────────┬────────────┐
-│ Rank │    Country     │ Airspaces │    Size    │
-├──────┼────────────────┼───────────┼────────────┤
-│ 1    │ 🇷🇺 Russia     │ 1,905     │ 1.8 MB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 2    │ 🇫🇷 France     │ 1,616     │ 1.1 MB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 3    │ 🇮🇹 Italy      │ 1,516     │ 528 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 4    │ 🇵🇱 Poland     │ 1,191     │ 624 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 5    │ 🇳🇴 Norway     │ 1,156     │ 620 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 6    │ 🇪🇸 Spain      │ 713       │ 228 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 7    │ 🇩🇪 Germany    │ 677       │ 200 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 8    │ 🇧🇬 Bulgaria   │ 500       │ 992 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 9    │ 🇨🇭Switzerland │ 353       │ 380 KB     │
-├──────┼────────────────┼───────────┼────────────┤
-│ 10   │ 🇫🇮 Finland    │ 320       │ 100 KB     │
-└──────┴────────────────┴───────────┴────────────┘
-```
-
-*These 10 countries alone contain 10,000+ airspaces!*
-
----
-
 ## 🚀 Quick Start
 
-### Prerequisites
+### Requirements
 
-- Linux/Unix system (or WSL on Windows, Git Bash on macOS)
-- `wget` installed
-- `bash` shell (4.0+)
-- Internet connection
+- Linux, macOS, or Windows with WSL / Git Bash
+- `bash` 4+, `curl`
+- `python3` (only for the Netherlands LVNL conversion; standard library only)
 
-### Installation & Usage
+### Run
 
 ```bash
-# 1. Navigate to project directory
+git clone https://github.com/Bi7Wis3/Airspace_Downloader.git
 cd Airspace_Downloader
+chmod +x download_airspaces.sh add_airspace.sh scripts/*.sh
 
-# 2. Make script executable
-chmod +x download_airspaces.sh
-
-# 3. Download all airspaces (takes ~30 seconds)
 ./download_airspaces.sh
-
-# 4. Validate downloaded files
-./scripts/validate_airspace.sh output/*.txt
-
-# 5. View results
-ls -lh output/
 ```
 
-**That's it!** All 30 files covering 26 countries are now in the `output/` directory.
+All files are now in `output/`. A full run takes about a minute.
 
 ---
 
-## 📦 Complete File List
+## 🧰 Commands & Options
 
-All files downloaded and validated automatically:
+### `download_airspaces.sh [filter]`
+
+Downloads every source in `sources.txt`, or only the ones whose **name or region** contains the filter
+(case-insensitive).
+
+```bash
+./download_airspaces.sh                # all 62 sources
+./download_airspaces.sh netherlands    # netherlands + netherlands_community
+./download_airspaces.sh belgium        # the 4 Belgian files
+./download_airspaces.sh Americas       # a whole region
+```
+
+For each source it:
+
+1. downloads to a temporary file (or, for `lvnl://airspace`, runs the LVNL converter),
+2. validates it: not empty, not a web page, has `AC` records and geometry,
+3. skips it when identical to the current file (comment lines are ignored, so generated
+   headers with today's date don't count as a change),
+4. otherwise moves the current file to `output/archive/<name>_<date>.txt` and installs the new one.
+
+Output per line: airspace count and size, `unchanged`, or the reason for a failure (HTTP code, not OpenAir, …).
+The summary lists every failed source with its URL. Exit code is `0` only when all sources succeeded,
+which makes it cron-friendly.
+
+### `add_airspace.sh <file|folder> [...]`
+
+Adds OpenAir files you already have, for example old releases that are no longer online, to `output/archive/`.
+
+```bash
+./add_airspace.sh ~/Downloads/Airspaces            # every .txt/.sua/.air/.openair in a folder (recursive)
+./add_airspace.sh Dutch.airspace2020.txt EHv14_5.txt
+```
+
+- Every file is validated first; invalid files are rejected with the reason.
+- The original filename is kept (stored as `.txt`).
+- Never overwrites: identical copies are skipped (`=`), and a different file with the same name is stored as `name_2.txt`, `name_3.txt`, …
+
+### `scripts/validate_airspace.sh <file|folder> [...]`
+
+Checks files without downloading anything.
+
+```bash
+./scripts/validate_airspace.sh output/                      # current files + archive
+./scripts/validate_airspace.sh output/france.txt
+```
+
+Reports the airspace count and size per file, warns when `AN` names are missing, and exits non-zero if
+any file is invalid.
+
+### `scripts/lvnl_to_openair.py <output.txt>`
+
+Converts the official LVNL airspace feed to OpenAir on its own (used automatically by the downloader).
+
+```bash
+python3 scripts/lvnl_to_openair.py netherlands.txt
+# 329 airspaces, AIRAC 2026-10-01
+```
+
+---
+
+## 🗂️ Where Files Go
 
 ```
-┌────────────────────────────────────┬────────┬───────────┐
-│              Filename              │  Size  │ Airspaces │
-├────────────────────────────────────┼────────┼───────────┤
-│ belgium_weekdays_2024.txt          │ 276 KB │ 233       │
-│ belgium_weekends_2024.txt          │ 172 KB │ 138       │
-│ bulgaria_2023.txt                  │ 992 KB │ 500       │
-│ croatia_2012.txt                   │ 88 KB  │ 94        │
-│ czechia_2025.txt                   │ 136 KB │ 281       │
-│ denmark_2025.txt                   │ 76 KB  │ 173       │
-│ estonia_2015.txt                   │ 20 KB  │ 79        │
-│ finland_2025.txt                   │ 100 KB │ 320       │
-│ france_2026.txt                    │ 1.1 MB │ 1,616     │
-│ germany_2026.txt                   │ 200 KB │ 677       │
-│ germany_daec_2025.txt              │ 200 KB │ 677       │
-│ greece_2025.txt                    │ 28 KB  │ 99        │
-│ hungary_2024.txt                   │ 336 KB │ 253       │
-│ ireland_2025.txt                   │ 32 KB  │ 105       │
-│ italy_2025.txt                     │ 528 KB │ 1,516     │
-│ latvia_2014.txt                    │ 8 KB   │ 23        │
-│ lithuania_2025.txt                 │ 152 KB │ 286       │
-│ macedonia_2018.txt                 │ 8 KB   │ 13        │
-│ netherlands_2025.txt               │ 192 KB │ 166       │
-│ norway_2025.txt                    │ 620 KB │ 1,156     │
-│ poland_2024.txt                    │ 624 KB │ 1,191     │
-│ portugal_2020.txt                  │ 32 KB  │ 75        │
-│ romania_2024.txt                   │ 100 KB │ 295       │
-│ russia_2013.txt                    │ 1.8 MB │ 1,905     │
-│ slovakia_soaringweb_2024.txt       │ 320 KB │ 112       │
-│ slovenia_2016.txt                  │ 56 KB  │ 32        │
-│ spain_2025.txt                     │ 228 KB │ 713       │
-│ switzerland_2026.txt               │ 228 KB │ 334       │
-│ switzerland_soaringweb_2025.txt    │ 380 KB │ 353       │
-│ ukraine_2021.txt                   │ 24 KB  │ 114       │
-├────────────────────────────────────┼────────┼───────────┤
-│ TOTAL                              │ 8.9 MB │ 13,412    │
-└────────────────────────────────────┴────────┴───────────┘
+output/
+├── germany.txt                      ← always the latest valid version, stable name
+├── netherlands.txt
+├── ...
+└── archive/
+    ├── germany_2026-06-12.txt       ← previous version, dated by when it was downloaded
+    ├── belgium_weekdays_2024.txt
+    └── Dutch.airspace2020.txt       ← your own files from add_airspace.sh
 ```
+
+Stable names in `output/` make it easy to sync or copy to a device. Every older version stays available
+in `output/archive/`. Both folders are git-ignored.
+
+---
+
+## 📝 The Source List (`sources.txt`)
+
+One source per line:
+
+```
+region | name | description | url
+```
+
+| Field | Meaning |
+|---|---|
+| `region` | Section heading in the output, and usable as a filter (`Europe`, `Americas`, `Other`) |
+| `name` | Output file name: `output/<name>.txt`. Keep it stable and without a year |
+| `description` | Shown while downloading; put the release date here |
+| `url` | `http(s)://…` download link, or `lvnl://airspace` for the Dutch LVNL feed |
+
+```
+Europe | germany     | Germany (DAeC Sep 2026)                    | https://www.daec.de/media/files/Dateien/Fachbereiche/Luftraum_und_Flugsicherheit/2026_09_Airspace_Germany_OA1.txt
+Europe | netherlands | Netherlands (official LVNL, current AIRAC) | lvnl://airspace
+```
+
+- **Update a country:** replace its URL (and the date in the description).
+- **Add a country:** add a line.
+- **Disable a source:** put `#` in front of the line.
+
+> 💡 SoaringWeb renames files with every release. The current filename for most countries is in
+> [XCSoar's airspace index](https://github.com/XCSoar/xcsoar-data-content/tree/master/data/remote/airspace),
+> which is synced automatically from SoaringWeb and DAeC.
+
+---
+
+## 🌐 Coverage
+
+**62 sources · 41 countries · 35,411 airspaces · 21 MB** (verified October 2026)
+
+### Europe (31 countries)
+
+| Country | Source | Release |
+|---|---|---|
+| 🇧🇪🇱🇺 Belgium & Luxembourg | LVZC: weekdays, weekdays gliding, weekends, EBR78 | Mar 2026 |
+| 🇧🇬 Bulgaria | SoaringWeb | 2023 |
+| 🇭🇷 Croatia | SoaringWeb | 2012 ⚠️ |
+| 🇨🇿 Czechia | SoaringWeb, XCSoar | Aug 2025 |
+| 🇩🇰 Denmark | SoaringWeb | Feb 2026 |
+| 🇪🇪 Estonia | SoaringWeb | 2015 ⚠️ |
+| 🇫🇮 Finland | SoaringWeb, Aviamaps, PIK static, PIK daily | 2026 / live |
+| 🇫🇷 France | SoaringWeb, Planeur-Net | Jul 2026 / live |
+| 🇩🇪 Germany | DAeC (official), GitHub mirror, border, military low-flying | Sep 2026 |
+| 🇬🇷 Greece | SoaringWeb | old ⚠️ |
+| 🇭🇺 Hungary | SoaringWeb | 2026 |
+| 🇮🇸 Iceland | SoaringWeb | 2018 |
+| 🇮🇪 Ireland | SoaringWeb | 2025 |
+| 🇮🇹 Italy | SoaringWeb | Apr 2025 |
+| 🇱🇻 Latvia | SoaringWeb | 2014 ⚠️ |
+| 🇱🇹 Lithuania | SoaringWeb | 2026 |
+| 🇲🇰 North Macedonia | SoaringWeb | 2018 |
+| 🇳🇱 Netherlands | **LVNL official feed** + community file | every AIRAC / Feb 2025 |
+| 🇳🇴 Norway | SoaringWeb | 2025 |
+| 🇵🇱 Poland | SoaringWeb | Jul 2026 |
+| 🇵🇹 Portugal | SoaringWeb | 2020 |
+| 🇷🇴 Romania | SoaringWeb | May 2025 |
+| 🇷🇺 Russia | SoaringWeb | 2013 ⚠️ |
+| 🇸🇰 Slovakia | SoaringWeb, XCSoar | Apr 2024 |
+| 🇸🇮 Slovenia | SoaringWeb | 2016 ⚠️ |
+| 🇪🇸 Spain | SoaringWeb (full + reduced) | Jul 2026 |
+| 🇸🇪 Sweden | SoaringWeb | Aug 2026 |
+| 🇨🇭 Switzerland | SoaringWeb (SFVS), segelflug.ch eDABS | Mar 2026 |
+| 🇺🇦 Ukraine | SoaringWeb | 2021 |
+| 🇬🇧 United Kingdom | asselect.uk (generated from the UK AIP) | live |
+| 🌍 Thermal hotspots | glidinghotspots.eu (overlay, not airspace) | live |
+
+### Americas (4 countries)
+
+| Country | Source | Release |
+|---|---|---|
+| 🇺🇸 USA | SoaringWeb | Sep 2026 |
+| 🇨🇦 Canada | SoaringWeb (2 versions), XCSoar, Canada/US border | v3.23 |
+| 🇧🇷 Brazil | SoaringWeb | 2017 |
+| 🇨🇴 Colombia | SoaringWeb | 2018 |
+
+### Asia, Oceania & Africa (6 countries)
+
+| Country | Source | Release |
+|---|---|---|
+| 🇦🇺 Australia | SoaringWeb (with/without FIA), HG/PG site guide | Jul 2026 |
+| 🇳🇿 New Zealand | SoaringWeb | 2024 |
+| 🇮🇱 Israel | SoaringWeb | Oct 2025 |
+| 🇯🇵 Japan | SoaringWeb | 2019 |
+| 🇿🇦 South Africa | SoaringWeb, XCSoar | Jan 2025 |
+| 🇲🇼 Malawi | XCSoar | — |
+
+⚠️ = more than 5 years old. Treat it as a rough guide only.
+
+### Not available as free OpenAir
+
+**Austria** (no current free file; keep an old one with `add_airspace.sh`), Serbia, Bosnia, Montenegro,
+Albania, Turkey, Belarus, Moldova, and most of Asia, Africa and South America.
+[openAIP](https://www.openaip.net) covers every country, but its export bucket currently requires a Google
+Cloud billing account and its API needs a personal key.
+
+---
+
+## 🇳🇱 Netherlands: Official LVNL Data
+
+`lvnl://airspace` isn't a file download. `scripts/lvnl_to_openair.py` reads the
+**Airspaces_data** feed that LVNL (Dutch Air Traffic Control) publishes as open data on
+[geoportaal.lvnl.nl](https://geoportaal.lvnl.nl). It comes straight from LVNL's aeronautical
+database and is **refreshed every AIRAC cycle**, so it picks up airspace changes such as the new
+structure from **AIRAC 26 November 2026** without waiting for a community file.
+
+| LVNL layer | OpenAir class |
+|---|---|
+| CTR, TMA, CTA, VFR area | airspace class from the data (A–E) |
+| ATZ | `D` |
+| TMZ / RMZ | `TMZ` / `RMZ` |
+| Prohibited / Restricted, TSA, TRA | `P` / `R` |
+| Danger, Parajump, Climb area, Helicopter zones, Low flying area | `Q` |
+| Glider area | `GSEC` |
+
+FIR, IFR, ACC sector and delegated-area layers are left out. LVNL draws arcs with thousands of
+points, so polygons are simplified (Douglas–Peucker, ~15 m). That keeps the file around 730 KB
+with no visible loss at 1-arc-second OpenAir resolution. The file header shows the AIRAC effective date.
+
+The community file (by Nico B, covering up to FL095 over the mainland) is still available as
+`netherlands_community`.
+
+## 🇧🇪 Belgium: LVZC Yearly Release
+
+LVZC (Liga van Vlaamse Zweefvliegclubs) publishes new Belgian files each year around **31 March** at
+[lvzc.be → Luchtruimbestanden](https://www.lvzc.be/index.php/luchtruim/luchtruimbestanden).
+The 2026 release fixes many problems in earlier files: areas that weren't closed, arc (`DA` → `DB`)
+and circle definitions, center points, and class typos. Four files are included:
+
+| Name | Use |
+|---|---|
+| `belgium_weekdays` | Weekdays when the military is active, everything |
+| `belgium_weekdays_gliding` | Weekdays, gliding (GAA) version |
+| `belgium_weekends` | Weekends and holidays, below FL095 |
+| `belgium_ebr78_notam` | Load **only** when EBR78 is activated by NOTAM |
+
+When LVZC publishes next year's folder, update these 4 URLs in `sources.txt`.
 
 ---
 
 ## 🎨 OpenAir Format
 
-These files use the **OpenAir format**, the industry standard for airspace description in general aviation.
-
-### Format Overview
-
 ```
-AC P               # Airspace Class (P=Prohibited)
-AN EHP 25          # Airspace Name
-AH 2000 MSL        # Altitude High (ceiling)
-AL GND             # Altitude Low (floor)
-AF 132.350         # Radio Frequency
-DP 52:03:43 N 004:18:20 E   # Draw Point (polygon vertex)
-V X=52:10:47 N 005:13:38 E  # Circle center
-DC 0.5             # Draw Circle (radius in nautical miles)
-```
-
-### Airspace Classes Included
-
-```
-┌──────┬────────────────────────────┬─────────────┐
-│ Code │        Description         │    Color    │
-├──────┼────────────────────────────┼─────────────┤
-│ P    │ Prohibited Airspace        │ 🔴 Red      │
-│ R    │ Restricted Airspace        │ 🟠 Orange   │
-│ A    │ Class A Controlled         │ 🔵 Blue     │
-│ B    │ Class B Controlled         │ 🔵 Cyan     │
-│ C    │ Class C Controlled         │ 🟢 Green    │
-│ D    │ Class D Controlled         │ 🟡 Yellow   │
-│ CTR  │ Control Zone               │ 🔵 Blue     │
-│ TMA  │ Terminal Control Area      │ 🔵 Blue     │
-│ RMZ  │ Radio Mandatory Zone       │ 🟣 Purple   │
-│ TMZ  │ Transponder Mandatory Zone │ 🟣 Purple   │
-└──────┴────────────────────────────┴─────────────┘
+AC P                          # class: P, R, Q, A–G, CTR, TMZ, RMZ, GSEC, …
+AN EHP 25                     # name
+AH 2000FT MSL                 # ceiling
+AL SFC                        # floor
+AF 132.350                    # frequency (optional)
+DP 52:03:43 N 004:18:20 E     # polygon point
+V X=52:10:47 N 005:13:38 E    # center for circles/arcs
+V D=-                         # arc direction (+ clockwise, default)
+DB 52:00:00 N 005:00:00 E, 52:05:00 N 005:10:00 E   # arc between two points
+DA 5, 270, 90                 # arc: radius NM, start bearing, end bearing
+DC 0.5                        # circle, radius NM
 ```
 
-### Documentation
-- Official format spec: [OpenAir Format Support](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md)
+Many published files are **Latin-1 / Windows-1252 with CRLF** line endings, use `V X = ` with spaces,
+or write coordinates without a space (`49:29:37N`). The validator handles all of these, and your app's
+parser should too.
+
+Spec: [Naviter OpenAir format support](https://github.com/naviter/seeyou_file_formats/blob/main/OpenAir_File_Format_Support.md)
 
 ---
 
 ## 🛠️ Compatible Software
 
-These OpenAir files work with all major aviation navigation software:
-
-### Mobile Apps
-- **XCTrack** (Android/iOS) - Popular paragliding app
-- **iFuel Manager** (Android) - Fuel & airspace management
-- **Skytraxx** (Android) - Flight instruments
-
-### Desktop Software
-- **XCSoar** - Open source flight computer
-- **SeeYou** - Professional flight analysis
-- **LK8000** - Advanced moving map
-
-### Hardware Devices
-- **LXNav** devices - Navigation computers
-- **Oudie** devices - IGC flight computers
-- **Skytraxx** devices - Flight instruments
+- **Android/iOS:** XCTrack, iFuel Navigator, XCSoar, LK8000
+- **Desktop:** XCSoar, SeeYou, LK8000
+- **Devices:** LXNav, Oudie, Skytraxx, Flymaster (via their converters)
 
 ---
 
@@ -274,353 +332,99 @@ These OpenAir files work with all major aviation navigation software:
 ```
 Airspace_Downloader/
 ├── download_airspaces.sh         ← Main download script
+├── add_airspace.sh               ← Add your own (old) files to the archive
+├── sources.txt                   ← The list of sources - edit this
 ├── scripts/
-│   └── validate_airspace.sh      ← Validation tool
-├── output/                        ← 30 downloaded files
-│   ├── belgium_weekdays_2024.txt
-│   ├── france_2026.txt
-│   ├── germany_2026.txt
-│   └── ... (27 more files)
-├── README.md                      ← This file
-├── QUICKSTART.md                  ← 60-second setup guide
-├── CHANGELOG.md                   ← Version history
-├── LICENSE                        ← MIT License
-├── .gitignore                     ← Git ignore rules
-└── download.log                   ← Download history
+│   ├── openair_lib.sh            ← Shared OpenAir checks (sourced by the scripts)
+│   ├── validate_airspace.sh      ← Validation tool
+│   └── lvnl_to_openair.py        ← Netherlands LVNL feed → OpenAir
+├── output/                       ← Latest version of every source (git-ignored)
+│   └── archive/                  ← Previous versions and your own files
+├── download.log                  ← Run history (git-ignored)
+├── README.md
+├── QUICKSTART.md
+├── CHANGELOG.md
+└── LICENSE
 ```
 
 ---
 
-## 🌐 Data Sources
-
-All airspace data is downloaded from trusted aviation sources:
-
-### Primary Sources
-
-| Source | Type | Countries | Update Frequency |
-|--------|------|-----------|------------------|
-| **SoaringWeb** | Community | 20+ | Varies by country |
-| **planeur-net** | Official FR | France | Weekly |
-| **DAEC** | Official DE | Germany | Monthly/AIRAC |
-| **XCSoar** | Open Source | 2+ | Regular |
-| **aviamaps** | Aviation DB | Finland | Regular |
-| **openair-rs** | GitHub | Switzerland | Regular |
-| **bubeck** | GitHub | Germany | Daily |
-
-### Source URLs
-- SoaringWeb: https://soaringweb.org/Airspace/
-- planeur-net: https://github.com/planeur-net/airspace
-- DAEC: https://www.daec.de/luftraumdaten/
-- XCSoar: https://github.com/XCSoar/xcsoar-data-content
-
----
-
-## 🔧 Advanced Usage
-
-### Scheduling Automatic Updates
-
-Run weekly with cron (downloads on Sunday mornings):
+## 🔧 Automation
 
 ```bash
-# Edit crontab
-crontab -e
-
-# Add this line (runs every Sunday at 2 AM)
-0 2 * * 0 /path/to/Airspace_Downloader/download_airspaces.sh
+# crontab -e: update every Sunday at 2 AM, appending output to a log
+0 2 * * 0 /path/to/Airspace_Downloader/download_airspaces.sh >> /path/to/airspace_cron.log 2>&1
 ```
 
-### Filtering Specific Countries
-
-Edit `download_airspaces.sh` and comment out countries you don't need:
-
-```bash
-# Belgium (2 files - weekdays and weekends)
-# download_file \
-#     "https://soaringweb.org/Airspace/BE/BELLUX_WEEK_20240331.txt" \
-#     "$OUTPUT_DIR/belgium_weekdays_2024.txt" \
-#     "Belgium weekdays"
-```
-
-### Adding New Countries
-
-Add new download entries to the script:
-
-```bash
-download_file \
-    "https://example.com/path/to/airspace.txt" \
-    "$OUTPUT_DIR/country_year.txt" \
-    "Country Name"
-```
-
-### Validation Only
-
-Check existing files without downloading:
-
-```bash
-./scripts/validate_airspace.sh output/*.txt
-```
-
----
-
-## 🏆 Achievement: Complete European Coverage
-
-This project provides **the most comprehensive free European airspace dataset** available:
-
-✅ **All major European countries** - From Portugal to Russia
-✅ **All EU member states** (aviation-relevant) - Complete coverage
-✅ **Baltic states** - Estonia, Latvia, Lithuania
-✅ **Eastern Europe** - Including Russia and Ukraine
-✅ **All Alpine countries** - Perfect for mountain flying
-✅ **All Mediterranean countries** - Coastal and island flying
-✅ **All Scandinavian countries** - Northern Europe complete
-
-### Coverage Highlights
-
-- **Western Europe**: 100% coverage (all 5 countries)
-- **Southern Europe**: 100% coverage (all 7 countries)
-- **Northern Europe**: 100% coverage (all 5 countries)
-- **Eastern Europe**: 90% coverage (9 of 10 major countries)
-- **Total**: 26 of 30 European countries with active aviation
-
-**Missing only:** UK (manual download available), Austria (coming soon), Serbia, Albania
-
----
-
-## 📊 Data Currency
-
-```
-┌──────────┬───────────────────────┬─────────────┐
-│   Year   │      Countries        │    Status   │
-├──────────┼───────────────────────┼─────────────┤
-│ 2026     │ France, Germany, CH   │ 🟢 Current  │
-│ 2025     │ 15 countries          │ 🟢 Current  │
-│ 2024     │ 7 countries           │ 🟡 Recent   │
-│ 2020-23  │ 5 countries           │ 🟡 Older    │
-│ 2012-19  │ 3 countries           │ 🔴 Outdated │
-└──────────┴───────────────────────┴─────────────┘
-```
-
-**Note:** Even "older" files are still useful for basic airspace awareness, as major airspace structures rarely change dramatically. Always verify current status via NOTAMs.
-
----
-
-## 🤝 Contributing
-
-Want to improve this project?
-
-### Ways to Contribute
-
-1. **Add More Countries** - Find and submit links for missing countries
-2. **Update Old Files** - Find newer versions of outdated files
-3. **Improve Scripts** - Add features, error handling, or validation
-4. **Test & Report** - Try on different systems and report issues
-5. **Documentation** - Improve README, add translations, create tutorials
-
-### How to Contribute
-
-```bash
-# 1. Fork this repository
-# 2. Make your changes
-# 3. Test thoroughly
-# 4. Submit a pull request
-```
-
-### Ideas for Contribution
-- Add UK airspace (currently manual only)
-- Add Austria official source (when URL fixed)
-- Implement checksum verification (MD5/SHA)
-- Add automatic update checking
-- Create GUI version (Python/Electron)
-- Add Docker container support
-- Windows batch file version
-- Parallel downloads for speed
-- Support for other formats (KML, GeoJSON)
+Because unchanged files are skipped, the archive only grows when a source really changes. The script
+exits non-zero when any source fails, so cron or a CI job can alert you.
 
 ---
 
 ## 🐛 Troubleshooting
 
-### Common Issues
+**`✗ Failed (HTTP 404)`**: the source renamed its file. Find the new name on the source site (or in
+[XCSoar's index](https://github.com/XCSoar/xcsoar-data-content/tree/master/data/remote/airspace)) and update `sources.txt`.
+Your previous file in `output/` is kept.
 
-**Problem: `wget: command not found`**
-```bash
-# Ubuntu/Debian
-sudo apt-get install wget
+**`✗ Not an OpenAir file (got a web page instead of a file)`**: the site returned an error or a bot
+challenge page (e.g. Cloudflare). Try again later, or download it in a browser and use `add_airspace.sh`.
 
-# Fedora/RHEL
-sudo dnf install wget
+**`✗ LVNL conversion failed`**: check `python3 --version` and your connection, then see `download.log`.
 
-# macOS
-brew install wget
-```
+**`Permission denied`**: `chmod +x download_airspaces.sh add_airspace.sh scripts/*.sh`
 
-**Problem: `Permission denied`**
-```bash
-chmod +x download_airspaces.sh
-chmod +x scripts/*.sh
-```
-
-**Problem: Download fails (404 error)**
-- Source URL may have changed
-- Check the source website directly
-- File may have been moved/renamed
-- Open an issue on GitHub
-
-**Problem: Empty or corrupted file**
-- Check internet connection
-- Re-run the script
-- Try downloading manually from source URL
-- Check the log file for details: `cat download.log`
-
-**Problem: Script hangs**
-- Press Ctrl+C to cancel
-- Check internet connection
-- Try again with fewer countries
-- Increase timeout in script
+**`curl: command not found`**: `sudo apt install curl` (Debian/Ubuntu), `sudo dnf install curl` (Fedora), `brew install curl` (macOS)
 
 ---
 
-## 📞 Support & Contact
+## 🤝 Contributing
 
-### Getting Help
+Found a newer file or a new country? Update `sources.txt`, run
+`./download_airspaces.sh <name>` to verify it, and open a pull request.
 
-- **Issues**: Open an issue on GitHub
-- **Discussions**: Use GitHub Discussions for questions
-- **Documentation**: Check QUICKSTART.md and CHANGELOG.md
-
-### For Airspace Data Issues
-
-Contact the original source providers:
-- **SoaringWeb**: Check individual country maintainers
-- **OpenAIP**: https://www.openaip.net/
-- **DAEC**: https://www.daec.de/
-- **planeur-net**: https://github.com/planeur-net/airspace/issues
+Ideas: openAIP integration (per-user API key), more official ANSP feeds like LVNL, KML/GeoJSON export.
 
 ---
 
-## 🔗 Useful Links
+## 📞 Airspace Data Issues
 
-### Official Aviation Authorities
-- **EUROCONTROL**: https://www.eurocontrol.int/
-- **EASA**: https://www.easa.europa.eu/
-- **ICAO**: https://www.icao.int/
-
-### Aviation Communities
-- **XCSoar Forum**: https://forum.xcsoar.org/
-- **ParaglidingForum**: https://www.paraglidingforum.com/
-- **SoaringCafe**: https://soaringcafe.com/
-
-### Tools & Converters
-- **AirspaceConverter**: https://github.com/alus-it/AirspaceConverter
-- **OpenAIP Parser**: https://github.com/openAIP/openaip-openair-parser
-- **Airspace Visualizer**: https://github.com/dbrgn/airspace-visualizer
+Report errors in the data to the original maintainers:
+[SoaringWeb](https://soaringweb.org/Airspace/) ·
+[LVNL](https://geoportaal.lvnl.nl) ·
+[LVZC](https://www.lvzc.be/) ·
+[DAeC](https://www.daec.de/) ·
+[planeur-net](https://github.com/planeur-net/airspace/issues) ·
+[asselect](https://asselect.uk/)
 
 ---
 
 ## 📜 License
 
-MIT License - See [LICENSE](LICENSE) file for details.
-
-This project is open source and free to use. The airspace data itself is subject to the licenses of the original providers.
-
-### License Summary
-
-```
-✅ Commercial use allowed
-✅ Modification allowed
-✅ Distribution allowed
-✅ Private use allowed
-❌ No warranty provided
-❌ No liability accepted
-```
-
----
+MIT, see [LICENSE](LICENSE). The airspace data itself belongs to its providers and is subject to their terms.
 
 ## 📝 Changelog
 
-### Version 1.0.0 (2026-02-08)
-
-**Initial Release**
-
-- ✅ 30 files covering 26 European countries
-- ✅ 13,412 airspaces downloaded and validated
-- ✅ Automated download from 7 sources
-- ✅ Professional validation tools
-- ✅ Comprehensive documentation
-- ✅ MIT Licensed
-
-See [CHANGELOG.md](CHANGELOG.md) for detailed version history and roadmap.
-
----
-
-## 🎯 Summary
-
-### What You Get
-
-```
-✅ 26 Countries        From Atlantic to Urals
-✅ 30 Files            All validated and ready
-✅ 13,412 Airspaces    Complete coverage
-✅ 8.9 MB              Highly compressed
-✅ One Command         Fully automated
-✅ Professional Tools  Validation included
-✅ Open Source         MIT Licensed
-✅ Well Documented     Complete guides
-```
-
-### Why This is The Best
-
-1. **Most Comprehensive** - More countries than any other free tool
-2. **Fully Automated** - One command downloads everything
-3. **Validated** - Every file checked for format compliance
-4. **Professional** - Production-ready code and documentation
-5. **Open Source** - Community-driven and transparent
-6. **Up-to-Date** - Sources from 2024-2026
-7. **Well Maintained** - Regular updates and improvements
-8. **Easy to Use** - Works out of the box
-
----
-
-## 🚀 Ready to Fly?
-
-```bash
-cd /home/bitwise/Desktop/Source_Code/Airspace_Downloader
-./download_airspaces.sh
-```
-
-**That's it! You now have airspace data for 26 European countries covering 13,412 airspaces ready to use! ✈️**
+See [CHANGELOG.md](CHANGELOG.md). Version 2.0 (October 2026) adds the source list, the archive,
+`add_airspace.sh`, filters, the LVNL Netherlands converter, Belgium 2026 and many new countries.
 
 ---
 
 ## 🙏 Acknowledgments
 
-Special thanks to:
-- **SoaringWeb** - Comprehensive airspace database
-- **planeur-net** - French airspace maintenance
-- **DAEC** - Official German aviation authority data
-- **XCSoar Team** - XCSoar data repository
-- **OpenAIP** - Open aviation data platform
-- **All volunteer maintainers** - Keeping airspace data current
-- **The aviation community** - For feedback and contributions
+**SoaringWeb** (John Leibacher) · **LVNL** · **LVZC** · **DAeC** · **planeur-net** · **asselect.uk** ·
+**segelflug.ch** · **PIK** · **Aviamaps** · **XCSoar team** · and all volunteer maintainers who keep airspace data current.
 
 ---
 
 <div align="center">
 
-**European Airspace Downloader v1.0**
-
-*The most comprehensive free European airspace download tool*
+**Airspace Downloader v2.0**
 
 [Report Bug](https://github.com/Bi7Wis3/Airspace_Downloader/issues) • [Request Feature](https://github.com/Bi7Wis3/Airspace_Downloader/issues) • [Contribute](https://github.com/Bi7Wis3/Airspace_Downloader/pulls)
 
-Made with ❤️ by the aviation community
+**Last Updated:** October 16, 2026
 
-**Last Updated:** February 8, 2026
-
----
-
-**⚠️ Remember: Always check NOTAMs and official charts before flight! ⚠️**
-
-*Safe flying! ✈️*
+**⚠️ Always check NOTAMs and official charts before flight! ⚠️**
 
 </div>
